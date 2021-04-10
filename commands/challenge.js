@@ -67,7 +67,7 @@ module.exports = {
     description: 'Start a challenge!',
     execute(message, args) {
         //If previous Challenge is null, load from file
-        if (previousChallenge === null) {
+        if (previousChallenge === null && fs.existsSync('./previousChallenge.json')) {
             previousChallenge = JSON.parse(fs.readFileSync('./previousChallenge.json'));
             console.log(previousChallenge);
         }
