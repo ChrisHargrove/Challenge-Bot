@@ -85,4 +85,4 @@ module.exports = {
             message.channel.send("Challenge with arguments not implemented");
         }
     },
-}
+};
