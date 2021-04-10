@@ -76,7 +76,7 @@ module.exports = {
                     fields: [
                         { name: "Genre", value: genre, inline: true },
                         { name: "Asset Type", value: assetType, inline: true },
-                        { name: "Sub Type", value: assetSubType, inline = true }
+                        { name: "Sub Type", value: assetSubType, inline: true }
                     ]
                 }
             });
