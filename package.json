@@ -1,0 +1,22 @@
+{
+    "name": "challenge-bot",
+    "version": "1.0.0",
+    "description": "Challenge-Bot",
+    "main": "bot.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ChrisHargrove/Challenge-Bot.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ChrisHargrove/Challenge-Bot/issues"
+    },
+    "homepage": "https://github.com/ChrisHargrove/Challenge-Bot#readme",
+    "dependencies": {
+        "discord.js": "^12.5.3"
+    }
+}
