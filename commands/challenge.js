@@ -99,6 +99,7 @@ module.exports = {
                 AssetSubType: assetSubType,
             };
             fs.writeFileSync('./previousChallenge.json', JSON.stringify(previousChallenge));
+            console.log(JSON.stringify(previousChallenge));
 
             message.channel.send({
                 embed: {
