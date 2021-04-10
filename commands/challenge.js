@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const genres = [
     "sci-fi",
     "fantasy",
@@ -41,6 +43,8 @@ const creatureTypes = [
     "flying"
 ];
 
+let previousChallenge = null;
+
 function pickSubAssetType(assetType) {
     switch (assetType) {
         case "weapons":
@@ -62,12 +66,39 @@ module.exports = {
     name: 'challenge',
     description: 'Start a challenge!',
     execute(message, args) {
+        //If previous Challenge is null, load from file
+        if (previousChallenge === null) {
+            previousChallenge = JSON.parse(fs.readFileSync('./previousChallenge.json'));
+            console.log(previousChallenge);
+        }
+
         if (args.length == 0) {
-            //First choose genre
-            var genre = genres[Math.floor(Math.random() * genres.length)];
-            //Second choose asset type
-            var assetType = assetTypes[Math.floor(Math.random() * assetTypes.length)];
+            var genre = null;
+            var assetType = null;
+            if (previousChallenge != null) {
+                var count = 0;
+                do {
+                    genre = genres[Math.floor(Math.random() * genres.length)];
+                    count++;
+                } while (genre === previousChallenge.Genre && count < 5);
+                count = 0;
+                do {
+                    assetType = assetTypes[Math.floor(Math.random() * assetTypes.length)];
+                    count++;
+                } while (assetType === previousChallenge.AssetType && count < 5);
+            }
+            else {
+                genre = genres[Math.floor(Math.random() * genres.length)];
+                assetType = assetTypes[Math.floor(Math.random() * assetTypes.length)];
+            }
             var assetSubType = pickSubAssetType(assetType);
+
+            previousChallenge = {
+                Genre: genre,
+                AssetType: assetType,
+                AssetSubType: assetSubType,
+            };
+            fs.writeFileSync('./previousChallenge.json', JSON.stringify(previousChallenge));
 
             message.channel.send({
                 embed: {
