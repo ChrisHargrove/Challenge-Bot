@@ -28,7 +28,7 @@ Client.on('message', msg => {
     if (!Client.commands.has(command)) return;
 
     try {
-        Client.commands.get(command).execute(msg, args);
+        Client.commands.get(command).execute(DatabaseChannel, msg, args);
     }
     catch (error) {
         console.error(error);

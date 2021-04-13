@@ -65,7 +65,7 @@ function pickSubAssetType(assetType) {
 module.exports = {
     name: 'challenge',
     description: 'Start a challenge!',
-    execute(message, args) {
+    execute(DatabaseChannel, message, args) {
         //If previous Challenge is null, load from file
         if (previousChallenge === null && fs.existsSync('./previousChallenge.json')) {
             previousChallenge = JSON.parse(fs.readFileSync('./previousChallenge.json'));
@@ -101,9 +101,7 @@ module.exports = {
             fs.writeFileSync('./previousChallenge.json', JSON.stringify(previousChallenge));
             console.log(JSON.stringify(previousChallenge));
 
-            //msg => msg.react('❎')
-
-            message.channel.send({
+            var challengeMessage = {
                 embed: {
                     color: 3447003,
                     title: "This weeks challenge!",
@@ -113,11 +111,18 @@ module.exports = {
                         { name: "Sub Type", value: assetSubType, inline: true }
                     ]
                 }
-            })
+            };
+
+            message.channel.send(challengeMessage)
                 .then(msg => {
                     msg.react('✅')
                         .catch(console.error);
+                    msg.react('❎')
+                        .catch(console.error);
                 })
+                .catch(console.error);
+
+            DatabaseChannel.send(challengeMessage)
                 .catch(console.error);
         }
         else {
