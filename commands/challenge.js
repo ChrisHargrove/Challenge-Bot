@@ -111,7 +111,7 @@ module.exports = {
                         { name: "Sub Type", value: assetSubType, inline: true }
                     ]
                 }
-            }).then(msg => msg.react('✅')).then(msg => msg.react('❎'));
+            }).then(msg => msg.react('✅')).then(msg => msg.react('❎')).catch(console.error);
         }
         else {
             message.channel.send("Challenge with arguments not implemented");

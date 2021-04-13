@@ -12,6 +12,15 @@ for (const file of commandFiles) {
 }
 
 client.on('ready', () => {
+
+    var channel = client.channels.cache.find(channel => channel.name === "bot-database");
+    if (channel == null) {
+        console.log("couldnt find database channel - creating new channel");
+    }
+    else {
+        console.log("found channel");
+    }
+
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
