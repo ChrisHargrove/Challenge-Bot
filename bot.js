@@ -90,7 +90,7 @@ function retrievePreviousChallenge() {
 
     var embedList = messageList.map(msg => msg.embeds.find(embed => embed.title === "This weeks challenge!"));
 
-    var recentEmbed = embedList.first();
+    var recentEmbed = embedList[0];
     recentEmbed.fields.forEach(element => {
         Context.previousChannel[element.name] = element.value;
     });
