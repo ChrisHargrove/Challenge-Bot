@@ -2,26 +2,22 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+var Guild = null;
+var DatabaseChannel = null;
+
 client.commands = new Discord.Collection();
 
-//Dynamically load all commands from their respective files
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
-}
+loadAllCommands(client);
 
 client.on('ready', () => {
+    if (checkGuild(client)) {
+        checkDatabaseChannel();
 
-    var channel = client.channels.cache.find(channel => channel.name === "bot-database");
-    if (channel == null) {
-        console.log("couldnt find database channel - creating new channel");
-    }
-    else {
-        console.log("found channel");
-    }
+        DatabaseChannel.send("Beep Boop! Setting Up Database")
+            .catch(console.error);
 
-    console.log(`Logged in as ${client.user.tag}!`);
+        console.log(`Logged in as ${client.user.tag}!`);
+    }
 });
 
 client.on('message', msg => {
@@ -43,3 +39,38 @@ client.on('message', msg => {
 });
 
 client.login(process.env.token);
+
+//Utility Functions
+function loadAllCommands(client) {
+    const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+    for (const file of commandFiles) {
+        const command = require(`./commands/${file}`);
+        client.commands.set(command.name, command);
+    }
+}
+
+function checkGuild(client) {
+    var guild = client.guilds.find(guild => guild.name === "Modelling Roundup");
+    if (guild != null) {
+        Guild = guild;
+        return true;
+    }
+
+    console.log("Bot is being used in incorrect Guild! Shutting Down!...");
+    client.destroy();
+    return false;
+}
+
+function checkDatabaseChannel() {
+    var channel = Guild.channels.cache.find(channel => channel.name === "bot-database");
+    if (channel == null) {
+        console.log("couldnt find database channel - creating new channel");
+        Guild.channels.create("bot-database", { reason: "Bot needs a database channel!", type: "text" })
+            .then(newChannel => DatabaseChannel = newChannel)
+            .catch(console.error);
+    }
+    else {
+        console.log("found channel");
+        DatabaseChannel = channel;
+    }
+}
