@@ -73,15 +73,15 @@ function checkDatabaseChannel() {
         console.log("couldnt find database channel - creating new channel");
         Context.Guild.channels.create("bot-database", { reason: "Bot needs a database channel!", type: "text" })
             .then(newChannel => {
-                Context.Guild.DatabaseChannel = newChannel;
-                Context.Guild.DatabaseChannel.send("Beep Boop! Setting Up Database")
+                Context.DatabaseChannel = newChannel;
+                Context.DatabaseChannel.send("Beep Boop! Setting Up Database")
                     .catch(console.error);
             })
             .catch(console.error);
     }
     else {
         console.log("found channel");
-        Context.Guild.DatabaseChannel = channel;
+        Context.DatabaseChannel = channel;
     }
 }
 
