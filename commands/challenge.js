@@ -43,8 +43,6 @@ const creatureTypes = [
     "flying"
 ];
 
-let previousChallenge = null;
-
 function pickSubAssetType(assetType) {
     switch (assetType) {
         case "weapons":
@@ -65,17 +63,12 @@ function pickSubAssetType(assetType) {
 module.exports = {
     name: 'challenge',
     description: 'Start a challenge!',
-    execute(DatabaseChannel, message, args) {
-        //If previous Challenge is null, load from file
-        if (previousChallenge === null && fs.existsSync('./previousChallenge.json')) {
-            previousChallenge = JSON.parse(fs.readFileSync('./previousChallenge.json'));
-            console.log(previousChallenge);
-        }
+    execute(Context, message, args) {
 
         if (args.length == 0) {
             var genre = null;
             var assetType = null;
-            if (previousChallenge != null) {
+            if (Context.previousChallenge != null) {
                 var count = 0;
                 do {
                     genre = genres[Math.floor(Math.random() * genres.length)];
@@ -85,7 +78,7 @@ module.exports = {
                 do {
                     assetType = assetTypes[Math.floor(Math.random() * assetTypes.length)];
                     count++;
-                } while (assetType === previousChallenge.AssetType && count < 5);
+                } while (assetType === Context.previousChallenge.AssetType && count < 5);
             }
             else {
                 genre = genres[Math.floor(Math.random() * genres.length)];
@@ -93,13 +86,13 @@ module.exports = {
             }
             var assetSubType = pickSubAssetType(assetType);
 
-            previousChallenge = {
+            Context.previousChallenge = {
                 Genre: genre,
                 AssetType: assetType,
                 AssetSubType: assetSubType,
             };
-            fs.writeFileSync('./previousChallenge.json', JSON.stringify(previousChallenge));
-            console.log(JSON.stringify(previousChallenge));
+            fs.writeFileSync('./previousChallenge.json', JSON.stringify(Context.previousChallenge));
+            console.log(JSON.stringify(Context.previousChallenge));
 
             var challengeMessage = {
                 embed: {

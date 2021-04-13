@@ -2,17 +2,22 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const Client = new Discord.Client();
 
-var Guild = null;
-var DatabaseChannel = null;
-
-Client.commands = new Discord.Collection();
+var Context = {
+    Guild: null,
+    DatabaseChannel: null,
+    previousChallenge: {
+        Genre: null,
+        AssetType: null,
+        SubType: null,
+    }
+};
 
 loadAllCommands();
 
 Client.on('ready', () => {
     if (checkGuild()) {
         checkDatabaseChannel();
-
+        retrievePreviousChallenge();
 
 
         console.log(`Logged in as ${Client.user.tag}!`);
@@ -41,6 +46,8 @@ Client.login(process.env.token);
 
 //Utility Functions
 function loadAllCommands() {
+    Client.commands = new Discord.Collection();
+
     const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
@@ -51,7 +58,7 @@ function loadAllCommands() {
 function checkGuild() {
     var guild = Client.guilds.cache.find(guild => guild.name === "Modelling Roundup");
     if (guild != null) {
-        Guild = guild;
+        Context.Guild = guild;
         return true;
     }
 
@@ -61,19 +68,33 @@ function checkGuild() {
 }
 
 function checkDatabaseChannel() {
-    var channel = Guild.channels.cache.find(channel => channel.name === "bot-database");
+    var channel = Context.Guild.channels.cache.find(channel => channel.name === "bot-database");
     if (channel == null) {
         console.log("couldnt find database channel - creating new channel");
-        Guild.channels.create("bot-database", { reason: "Bot needs a database channel!", type: "text" })
+        Context.Guild.channels.create("bot-database", { reason: "Bot needs a database channel!", type: "text" })
             .then(newChannel => {
-                DatabaseChannel = newChannel;
-                DatabaseChannel.send("Beep Boop! Setting Up Database")
+                Context.Guild.DatabaseChannel = newChannel;
+                Context.Guild.DatabaseChannel.send("Beep Boop! Setting Up Database")
                     .catch(console.error);
             })
             .catch(console.error);
     }
     else {
         console.log("found channel");
-        DatabaseChannel = channel;
+        Context.Guild.DatabaseChannel = channel;
     }
+}
+
+function retrievePreviousChallenge() {
+    var messageList = Context.DatabaseChannel.messages.cache.slice().sorted((msgOne, msgTwo) => msgTwo.createdAt - msgOne.createdAt);
+
+    var embedList = messageList.map(msg => msg.embeds.find(embed => embed.title === "This weeks challenge!"));
+
+    var recentEmbed = embedList.first();
+    recentEmbed.fields.forEach(element => {
+        Context.previousChannel[element.name] = element.value;
+    });
+
+    console.log("Previous Challenge");
+    console.log(JSON.stringify(Context.previousChallenge))
 }
