@@ -13,8 +13,7 @@ Client.on('ready', () => {
     if (checkGuild()) {
         checkDatabaseChannel();
 
-        DatabaseChannel.send("Beep Boop! Setting Up Database")
-            .catch(console.error);
+
 
         console.log(`Logged in as ${Client.user.tag}!`);
     }
@@ -66,7 +65,11 @@ function checkDatabaseChannel() {
     if (channel == null) {
         console.log("couldnt find database channel - creating new channel");
         Guild.channels.create("bot-database", { reason: "Bot needs a database channel!", type: "text" })
-            .then(newChannel => DatabaseChannel = newChannel)
+            .then(newChannel => {
+                DatabaseChannel = newChannel;
+                DatabaseChannel.send("Beep Boop! Setting Up Database")
+                    .catch(console.error);
+            })
             .catch(console.error);
     }
     else {
