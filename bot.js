@@ -16,7 +16,7 @@ Client.on('ready', () => {
         DatabaseChannel.send("Beep Boop! Setting Up Database")
             .catch(console.error);
 
-        console.log(`Logged in as ${client.user.tag}!`);
+        console.log(`Logged in as ${Client.user.tag}!`);
     }
 });
 
