@@ -88,7 +88,7 @@ function checkDatabaseChannel() {
 function retrievePreviousChallenge() {
     var messageList = Context.DatabaseChannel.messages.cache.sorted((msgOne, msgTwo) => msgTwo.createdAt - msgOne.createdAt);
 
-    var embedList = messageList.map(msg => msg.embeds.find(embed => embed.title === "This weeks challenge!"));
+    var embedList = messageList.map(msg => msg.embeds.find(embed => embed.title === "This weeks challenge!")).filter(embed => embed);
 
     var recentEmbed = embedList[0];
     recentEmbed.fields.forEach(element => {
