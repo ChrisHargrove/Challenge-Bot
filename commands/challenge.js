@@ -101,6 +101,8 @@ module.exports = {
             fs.writeFileSync('./previousChallenge.json', JSON.stringify(previousChallenge));
             console.log(JSON.stringify(previousChallenge));
 
+            //msg => msg.react('❎')
+
             message.channel.send({
                 embed: {
                     color: 3447003,
@@ -111,7 +113,12 @@ module.exports = {
                         { name: "Sub Type", value: assetSubType, inline: true }
                     ]
                 }
-            }).then(msg => msg.react('✅').then(msg => msg.react('❎').catch(console.error)).catch(console.error)).catch(console.error);
+            })
+                .then(msg => {
+                    msg.react('✅')
+                        .catch(console.error);
+                })
+                .catch(console.error);
         }
         else {
             message.channel.send("Challenge with arguments not implemented");
