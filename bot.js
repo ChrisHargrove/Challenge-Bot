@@ -86,7 +86,7 @@ function checkDatabaseChannel() {
 }
 
 function retrievePreviousChallenge() {
-    var messageList = Context.DatabaseChannel.messages.cache.slice().sorted((msgOne, msgTwo) => msgTwo.createdAt - msgOne.createdAt);
+    var messageList = Context.DatabaseChannel.messages.cache.sorted((msgOne, msgTwo) => msgTwo.createdAt - msgOne.createdAt);
 
     var embedList = messageList.map(msg => msg.embeds.find(embed => embed.title === "This weeks challenge!"));
 
